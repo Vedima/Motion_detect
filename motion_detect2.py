@@ -2,10 +2,18 @@ import numpy
 import cv2
 import copy
 import time
+import os
+import os.path
 
 
+#print(path)
+if os.path.exists('coordinates'):
+    user = input('Выберите режим работы: 1 - с текущими координатами; 2 - с заданными координатами ')
+else:
+     user = input('2 - с заданными координатами ')
+    
 ix = []
-iy = [] 
+iy = []
 
 call_counter=0
 #Кликаем левой кнопкой и получаем кооординаты
@@ -18,12 +26,15 @@ def getCurrPoint(event,x,y,flags,param):
         iy.append(y)
 
 
-user = input('Выберите режим работы: 1 - с текущими координатами; 2 - с заданными координатами ')
+
 cap = cv2.VideoCapture(0)
 if not cap.isOpened():
     print("Cannot open camera")
     exit()
-
+try:
+    os.mkdir("images")
+except FileExistsError:
+    pass
 ret, frame = cap.read()
 frame_prev = copy.copy(frame)
 h=480
@@ -122,7 +133,8 @@ while True:
     maxlistD = max(listD)
     minlistD = min(listD)
     a = minlistB + (0.2 * (maxlistB-minlistB))
-    b = maxlistD + (0.1 * (maxlistD-minlistD))
+    
+    b = maxlistD - 1
     
     
     if len(listA)==80:
@@ -135,7 +147,7 @@ while True:
         elif state == 1:
             if maxlistB >= result >= a:
                 state = 0
-            elif result2 > b:
+            elif result2 >= b:
                 state = 2
         elif state == 2:
             if maxlistB >= result >= a:
@@ -159,8 +171,8 @@ while True:
 
     
     time1 = str(time.strftime('%H%M%S'))
-    cv2.imwrite(f'frame{time1}.jpg', frame)
-
+    cv2.imwrite(f'images/frame{time1}.jpg', frame)
+    
     # Показать кадр
     cv2.imshow('frame', frame)
     cv2.imshow('frame2', frame2)
