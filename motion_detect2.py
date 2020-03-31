@@ -107,7 +107,9 @@ while True:
     s2 = numpy.sum(frame2[iy[3]:iy[2], ix[2]:ix[3], 0:2])
     s3 = numpy.sum(frame2[iy[5]:iy[4], ix[4]:ix[5], 0:2])
     print(iy[1],iy[0],  ix[0],ix[1], s1, iy[3],iy[2],ix[2],ix[3], s2)
-    #Находим среднее значение за секунду 
+    #Находим среднее значение за секунду
+    a = minlistB + (0.2 * (maxlistB-minlistB))
+    b = maxlistD - 1
     if len(listA)==80:
         listA.pop(0)
         
@@ -132,9 +134,7 @@ while True:
     minlistB = min(listB)
     maxlistD = max(listD)
     minlistD = min(listD)
-    a = minlistB + (0.2 * (maxlistB-minlistB))
     
-    b = maxlistD - 1
     
     
     if len(listA)==80:
@@ -147,7 +147,7 @@ while True:
         elif state == 1:
             if maxlistB >= result >= a:
                 state = 0
-            elif result2 >= b:
+            elif result2 > b:
                 state = 2
         elif state == 2:
             if maxlistB >= result >= a:
