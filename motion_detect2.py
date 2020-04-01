@@ -87,16 +87,16 @@ else:
         iy.append(int(p1[1]))
     file.close()
 
-listA=[]
-listB=[]
-listC=[]
-listD=[]
+listCar1=[]
+listCar2=[]
+listRail1=[]
+listRail2=[]
 state = 0
 
-maxlistB = 0 
-minlistB = 0
-maxlistD = 0
-minlistD = 0
+maxlistCar2 = 0 
+minlistCar2 = 0
+maxlistRail2 = 0
+minlistRail2 = 0
 
 while True:
 #Размываем и получаем разность между кадрами
@@ -112,49 +112,49 @@ while True:
     s3 = numpy.sum(frame2[iy[5]:iy[4], ix[4]:ix[5], 0:2])
     print(iy[1],iy[0],  ix[0],ix[1], s1, iy[3],iy[2],ix[2],ix[3], s2)
     #Находим среднее значение за секунду
-    a = minlistB + (0.2 * (maxlistB-minlistB))
-    b = maxlistD 
-    if len(listA)==80:
-        listA.pop(0)
+
+    a = minlistCar2 + (0.2 * (maxlistCar2-minlistCar2))
+    b = maxlistRail2 - 1
+    range = (minlistRail2/10) + 1
+    if len(listCar1)==80:
+        listCar1.pop(0)
         
-    listA.append((s1+s2)//1000)
-    result = (sum(listA) - max(listA) - min(listA))//78
+    listCar1.append((s1+s2)//1000)
+    avgCar = (sum(listCar1) - max(listCar1) - min(listCar1))//78
         
-    if len(listC)==80:
-        listC.pop(0)
-    listC.append(s3//1000)
-    result2 = (sum(listC) - max(listC) - min(listC))//78
+    if len(listRail)==80:
+        listRail1.pop(0)
+    listRail1.append(s3//1000)
+    avgRail = (sum(listRail1) - max(listRail1) - min(listRail1))//78
     
 
 
     #Находим мах и мин за час (7200)
-    if len(listB)== 5000:#7200
-        listB.pop(0)
-    listB.append(result)
-    if len(listD)== 80:
-        listD.pop(0)
-    listD.append(result2)
-    maxlistB = max(listB)
-    minlistB = min(listB)
-    maxlistD = max(listD)
-    minlistD = min(listD)
+    if len(listCar2)== 5000:#7200
+        listCar2.pop(0)
+    listCar2.append(avgCar)
+    if len(listRail2)== 80:
+        listRail2.pop(0)
+    listRail2.append(avgRail)
+    maxlistCar2 = max(listCar2)
+    minlistCar2 = min(listCar2)
+    maxlistRail2 = max(listRail2)
+    minlistRail2 = min(listRail2)
     
-    
-    
-    if len(listA)==80:
+        
+    if len(listCar1)==80:
         if state == 0:
-            if maxlistB >= result >= a:
-                state = 0
-    
+            if maxlistCar2 >= avgCar >= a:
+                state = 0    
             else: 
                 state = 1
         elif state == 1:
-            if maxlistB >= result >= a:
+            if maxlistCar2 >= avgCar >= a:
                 state = 0
-            elif result2 > b:
+            elif avgRail > b and (maxlistRail2 - minlistRail2) > range:
                 state = 2
         elif state == 2:
-            if maxlistB >= result >= a:
+            if maxlistCar2 >= avgCar >= a:
                 state = 0
         
     #Соединяем точки и выводим области на кадр
@@ -168,9 +168,9 @@ while True:
     font = cv2.FONT_HERSHEY_COMPLEX
 
     photo = str(time.strftime('%d.%m.%y %H:%M:%S'))
-    cv2.putText(frame, f'{photo} average = {result},{result2}', (30,30), font, 1, color=(0, 0, 255), thickness=2)
-    cv2.putText(frame, f'max = {maxlistB}, min = {minlistB}, len = {len(listB)}', (30,60), font, 1, color=(0, 0, 255), thickness=2)
-    cv2.putText(frame, f'max = {maxlistD}, min = {minlistD}, len = {len(listD)}', (30,90), font, 1, color=(0, 0, 255), thickness=2)
+    cv2.putText(frame, f'{photo} average = {avgCar},{avgRail}', (30,30), font, 1, color=(0, 0, 255), thickness=2)
+    cv2.putText(frame, f'max = {maxlistCar2}, min = {minlistCar2}, len = {len(listCar2)}', (30,60), font, 1, color=(0, 0, 255), thickness=2)
+    cv2.putText(frame, f'max = {maxlistRail2}, min = {minlistRail2}, len = {len(listRail2)}', (30,90), font, 1, color=(0, 0, 255), thickness=2)
     cv2.putText(frame, f'state = {state}', (30,120), font, 1, color=(0, 0, 255), thickness=2)
 
     
