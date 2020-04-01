@@ -7,7 +7,7 @@ import os.path
 
 
 #print(path)
-if os.path.exists('coordinates'):
+if os.path.exists('coordinates.txt'):
     user = input('Выберите режим работы: 1 - с текущими координатами; 2 - с заданными координатами ')
 else:
      user = input('2 - с заданными координатами ')
@@ -93,6 +93,10 @@ listC=[]
 listD=[]
 state = 0
 
+maxlistB = 0 
+minlistB = 0
+maxlistD = 0
+minlistD = 0
 
 while True:
 #Размываем и получаем разность между кадрами
@@ -109,7 +113,7 @@ while True:
     print(iy[1],iy[0],  ix[0],ix[1], s1, iy[3],iy[2],ix[2],ix[3], s2)
     #Находим среднее значение за секунду
     a = minlistB + (0.2 * (maxlistB-minlistB))
-    b = maxlistD - 1
+    b = maxlistD 
     if len(listA)==80:
         listA.pop(0)
         
